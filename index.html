@@ -2,7 +2,7 @@
 <html lang="sk">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Denník</title>
 <meta name="theme-color" content="#0b1220">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,7 +18,8 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0f1a;--card:#131b2b;--ink:#e8edf7;--mut:#8f9bb2;--line:#243049;--soft:#1a2a45;--hd:#060a12;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0a0f1a;--card:#131b2b;--ink:#e8edf7;--mut:#8f9bb2;--line:#243049;--soft:#1a2a45;--hd:#060a12;color-scheme:dark}
 *{box-sizing:border-box}
-html,body{margin:0}
+html,body{margin:0;overflow-x:hidden;-webkit-text-size-adjust:100%;touch-action:manipulation}
+html.lock,html.lock body{overflow:hidden}
 body{background:var(--bg);color:var(--ink);font:15px/1.45 "IBM Plex Sans","Segoe UI",system-ui,sans-serif;min-height:100vh}
 header{background:var(--hd);color:#fff;padding:22px 20px 22px;position:relative}
 header .w{max-width:720px;margin:0 auto}
@@ -58,7 +59,7 @@ h3{font-size:.75rem;color:var(--acc);margin:16px 0 8px;letter-spacing:.06em}
 .dh{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);padding-bottom:8px;margin:20px 0 12px}
 .dh .ic{background:var(--acc);color:#fff}.dh small{color:var(--acc);font-weight:700;font-size:.7rem;display:block;letter-spacing:.06em}
 .dh .n{margin-left:auto;background:var(--soft);color:var(--acc);font-weight:700;font-size:.8rem;border-radius:6px;padding:2px 8px}
-input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
+input,select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
 #q{margin-bottom:6px}
 .empty{color:var(--mut);text-align:center;padding:26px 10px;border:1px dashed var(--line);border-radius:10px}
 #fab{position:fixed;right:max(18px,calc(50% - 360px + 18px));bottom:calc(84px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;border:0;background:var(--acc);color:#fff;font-size:2rem;line-height:1;box-shadow:0 6px 16px rgba(31,122,224,.4);cursor:pointer}
@@ -67,7 +68,7 @@ nav button{flex:1;padding:10px 2px 9px;border:0;background:none;color:var(--mut)
 nav button span{font-size:1.25rem}nav button[aria-selected="true"]{color:var(--acc)}
 #ov{position:fixed;inset:0;background:rgba(5,10,20,.55);display:none;align-items:flex-end;justify-content:center;z-index:20}
 #ov.on{display:flex}
-#sh{background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:10px;max-height:90vh;overflow:auto}
+#sh{background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:10px;max-height:85vh;max-height:85dvh;overflow:auto;overscroll-behavior:contain}
 #sh h4{margin:0;font-size:1.1rem}#sh label{display:grid;gap:4px;font-size:.82rem;color:var(--mut)}
 .br{display:flex;gap:10px}.br button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
 .br .p{background:var(--acc);border-color:var(--acc);color:#fff}.br .x{color:#d33}
@@ -120,7 +121,7 @@ else if(f.t==="check")return `<label style="grid-auto-flow:column;justify-conten
 else c=`<input name="${f.k}" type="${f.t||"text"}" value="${v}" ${f.u?'data-u="1" autocapitalize="characters" autocomplete="off"':""} ${f.p?`placeholder="${esc(f.p)}"`:""}>`;
 return `<label>${esc(f.l)}${c}</label>`}).join("")+
 `<div class="br">${onDel?'<button class="x" id="md">Zmazať</button>':""}<button id="mc">Zrušiť</button><button class="p" id="ms">Uložiť</button></div>`;
-$("ov").classList.add("on");
+$("ov").classList.add("on");document.documentElement.classList.add("lock");
 const cu=()=>{const r=sh.querySelectorAll("[data-c]");if(r.length)$("cd").textContent=pad(r[0].value)+":"+pad(r[1].value)};
 sh.querySelectorAll("[data-c]").forEach(r=>r.oninput=cu);
 sh.querySelectorAll("[data-u]").forEach(i=>i.oninput=()=>{i.value=i.value.toUpperCase().replace(/[^\p{Lu}0-9 ]/gu,"")});
@@ -129,7 +130,7 @@ $("mc").onclick=close;
 $("ms").onclick=()=>{onSave(get());save();close();render()};
 if(onDel)$("md").onclick=()=>{onDel();save();close();render()};
 }
-function close(){$("ov").classList.remove("on")}
+function close(){$("ov").classList.remove("on");document.documentElement.classList.remove("lock")}
 $("ov").onclick=e=>{if(e.target.id==="ov")close()};
 
 const storeOpts=()=>[...new Set(S.recs.map(r=>r.store))];
@@ -236,7 +237,7 @@ else if(a==="chk"){task.done=!task.done;save();render()}
 else if(a==="today"){task.date=T;save();render()}
 else if(a==="plus"){const d=D(task.date);d.setDate(d.getDate()+1);task.date=ymd(d);save();render()}
 else if(a==="pick")modal("Vybrať deň",[{k:"date",l:"Deň",t:"date",v:task.date}],o=>{if(o.date)task.date=o.date});
-else if(a==="in"||a==="out"){const r=S.att[T]||(S.att[T]={in:"",out:"",off:false});if(r[a]){attForm(T,r)}else{r[a]=nowT();save();render()}}
+else if(a==="in"||a==="out"){const r=S.att[T]||{in:"",out:"",off:false};modal(a==="in"?"Príchod":"Odchod",[{k:"t",l:"Čas",t:"clock",v:r[a]||nowT()}],o=>{const x=S.att[T]||(S.att[T]={in:"",out:"",off:false});x[a]=o.t},r[a]?()=>{S.att[T][a]="";const x=S.att[T];if(!x.in&&!x.out&&!x.off)delete S.att[T]}:null)}
 else if(a==="att")attForm(b.dataset.d,S.att[b.dataset.d]);
 else if(a==="addatt")attForm(null,null);
 else if(a==="xls"){const q=mr();modal("Export do Excelu",[{k:"from",l:"Od",t:"date",v:q[0]},{k:"until",l:"Do",t:"date",v:q[1]}],o=>{if(o.from&&o.until)exportXls(o.from,o.until)})}
@@ -266,9 +267,9 @@ function mailAtt(to,f,t){
 const rows=attRows(f,t);
 if(!rows.length){toast("V tomto období nie sú žiadne záznamy.");return}
 const sd=d=>D(d).toLocaleDateString("sk-SK");
-const body="Dochádzka "+sd(f)+" – "+sd(t)+"\n\n"+rows.map(x=>short(x.d)+": "+(x.r.off?"voľno":(x.r.in||"--:--")+" – "+(x.r.out||"--:--"))).join("\n");
+const body=rows.map(x=>short(x.d)+": "+(x.r.off?"voľno":(x.r.in||"--:--")+" – "+(x.r.out||"--:--"))).join("\n");
 const a=document.createElement("a");
-a.href="mailto:"+to+"?subject="+encodeURIComponent("Dochádzka "+sd(f)+" – "+sd(t))+"&body="+encodeURIComponent(body);
+a.href="mailto:"+to+"?subject="+encodeURIComponent("Dochádzka Kubišta")+"&body="+encodeURIComponent(body);
 a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove();
 toast("Otváram e-mailovú aplikáciu…");
 }
